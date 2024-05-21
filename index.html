@@ -19,16 +19,14 @@
     let player = {
         x: 50,
         y: 50,
-        width: 20,
-        height: 20,
+        size: 20,
         speed: 5
     };
 
     let chicken = {
         x: canvas.width - 50,
         y: canvas.height - 50,
-        width: 20,
-        height: 30,
+        size: 30,
         speed: 2
     };
 
@@ -36,13 +34,50 @@
     let score = 0;
 
     function drawPlayer() {
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(player.x, player.y, player.width, player.height);
+        // Draw frog body
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(player.x + player.size / 2, player.y + player.size / 2, player.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw frog eyes
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(player.x + player.size * 0.3, player.y + player.size * 0.4, player.size * 0.1, 0, Math.PI * 2);
+        ctx.arc(player.x + player.size * 0.7, player.y + player.size * 0.4, player.size * 0.1, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw frog pupils
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(player.x + player.size * 0.3, player.y + player.size * 0.4, player.size * 0.05, 0, Math.PI * 2);
+        ctx.arc(player.x + player.size * 0.7, player.y + player.size * 0.4, player.size * 0.05, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw frog mouth
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(player.x + player.size / 2, player.y + player.size * 0.6, player.size * 0.2, 0, Math.PI);
+        ctx.stroke();
     }
 
     function drawChicken() {
+        // Draw chicken body
         ctx.fillStyle = 'orange';
-        ctx.fillRect(chicken.x, chicken.y, chicken.width, chicken.height);
+        ctx.beginPath();
+        ctx.arc(chicken.x + chicken.size / 2, chicken.y + chicken.size / 2, chicken.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw chicken beak
+        ctx.fillStyle = 'yellow';
+        ctx.beginPath();
+        ctx.moveTo(chicken.x + chicken.size / 2, chicken.y + chicken.size / 2);
+        ctx.lineTo(chicken.x + chicken.size * 0.6, chicken.y + chicken.size * 0.4);
+        ctx.lineTo(chicken.x + chicken.size * 0.7, chicken.y + chicken.size / 2);
+        ctx.fill();
+        // Draw chicken eyes
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(chicken.x + chicken.size * 0.4, chicken.y + chicken.size * 0.3, chicken.size * 0.1, 0, Math.PI * 2);
+        ctx.arc(chicken.x + chicken.size * 0.6, chicken.y + chicken.size * 0.3, chicken.size * 0.1, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     function drawEggs() {
@@ -91,8 +126,8 @@
         // Egg laying
         if (Math.random() < 0.01) { // Chance to lay egg
             eggs.push({
-                x: chicken.x + chicken.width / 2,
-                y: chicken.y + chicken.height,
+                x: chicken.x + chicken.size / 2,
+                y: chicken.y + chicken.size,
                 width: 10,
                 height: 10
             });
@@ -102,9 +137,9 @@
         eggs.forEach(egg => {
             if (
                 player.x < egg.x + egg.width &&
-                player.x + player.width > egg.x &&
+                player.x + player.size > egg.x &&
                 player.y < egg.y + egg.height &&
-                player.y + player.height > egg.y
+                player.y + player.size > egg.y
             ) {
                 alert('You got hit by an egg! Your score was: ' + score);
                 resetGame();
@@ -113,10 +148,10 @@
 
         // Chicken collision with player
         if (
-            player.x < chicken.x + chicken.width &&
-            player.x + player.width > chicken.x &&
-            player.y < chicken.y + chicken.height &&
-            player.y + player.height > chicken.y
+            player.x < chicken.x + chicken.size &&
+            player.x + player.size > chicken.x &&
+            player.y < chicken.y + chicken.size &&
+            player.y + player.size > chicken.y
         ) {
             alert('You got hit by the chicken! Your score was: ' + score);
             resetGame();
@@ -133,6 +168,7 @@
         chicken.y = canvas.height - 50;
         eggs = [];
         score = 0;
+        keys = {}; // Reset keys
     }
 
     function gameLoop() {
