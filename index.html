@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duke Nukem JS</title>
+<style>
+    canvas {
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let player = {
+        x: 50,
+        y: 50,
+        width: 20,
+        height: 20,
+        speed: 5
+    };
+
+    let chicken = {
+        x: canvas.width - 50,
+        y: canvas.height - 50,
+        width: 20,
+        height: 30,
+        speed: 2
+    };
+
+    let eggs = [];
+    let score = 0;
+
+    function drawPlayer() {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawChicken() {
+        ctx.fillStyle = 'orange';
+        ctx.fillRect(chicken.x, chicken.y, chicken.width, chicken.height);
+    }
+
+    function drawEggs() {
+        ctx.fillStyle = 'brown';
+        eggs.forEach(egg => {
+            ctx.fillRect(egg.x, egg.y, egg.width, egg.height);
+        });
+    }
+
+    function drawScore() {
+        ctx.fillStyle = 'black';
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + score, 10, 30);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function update() {
+        if (keys[37]) { // left arrow
+            player.x -= player.speed;
+        }
+        if (keys[39]) { // right arrow
+            player.x += player.speed;
+        }
+        if (keys[38]) { // up arrow
+            player.y -= player.speed;
+        }
+        if (keys[40]) { // down arrow
+            player.y += player.speed;
+        }
+
+        // Chicken movement
+        if (player.x < chicken.x) {
+            chicken.x -= chicken.speed;
+        } else {
+            chicken.x += chicken.speed;
+        }
+        if (player.y < chicken.y) {
+            chicken.y -= chicken.speed;
+        } else {
+            chicken.y += chicken.speed;
+        }
+
+        // Egg laying
+        if (Math.random() < 0.01) { // Chance to lay egg
+            eggs.push({
+                x: chicken.x + chicken.width / 2,
+                y: chicken.y + chicken.height,
+                width: 10,
+                height: 10
+            });
+        }
+
+        // Egg collision with player
+        eggs.forEach(egg => {
+            if (
+                player.x < egg.x + egg.width &&
+                player.x + player.width > egg.x &&
+                player.y < egg.y + egg.height &&
+                player.y + player.height > egg.y
+            ) {
+                alert('You got hit by an egg! Your score was: ' + score);
+                resetGame();
+            }
+        });
+
+        // Chicken collision with player
+        if (
+            player.x < chicken.x + chicken.width &&
+            player.x + player.width > chicken.x &&
+            player.y < chicken.y + chicken.height &&
+            player.y + player.height > chicken.y
+        ) {
+            alert('You got hit by the chicken! Your score was: ' + score);
+            resetGame();
+        }
+
+        // Update score (elapsed time)
+        score++;
+    }
+
+    function resetGame() {
+        player.x = 50;
+        player.y = 50;
+        chicken.x = canvas.width - 50;
+        chicken.y = canvas.height - 50;
+        eggs = [];
+        score = 0;
+    }
+
+    function gameLoop() {
+        clearCanvas();
+        update();
+        drawPlayer();
+        drawChicken();
+        drawEggs();
+        drawScore();
+        requestAnimationFrame(gameLoop);
+    }
+
+    let keys = {};
+
+    document.addEventListener('keydown', function(e) {
+        keys[e.keyCode] = true;
+    });
+
+    document.addEventListener('keyup', function(e) {
+        delete keys[e.keyCode];
+    });
+
+    gameLoop();
+</script>
+</body>
+</html>
