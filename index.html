@@ -24,11 +24,19 @@
     };
 
     let chicken = {
-        x: canvas.width - 50,
-        y: canvas.height - 50,
-        size: 30,
-        speed: 2
-    };
+    x: canvas.width - 50,
+    y: canvas.height - 50,
+    size: 30,
+    speed: 2
+};
+
+let fox = {
+    x: canvas.width - 50,
+    y: 50,
+    size: 25,
+    speed: chicken.speed / 2 // Set fox speed to half of chicken speed
+};
+
 
     let eggs = [];
     let score = 0;
@@ -80,6 +88,26 @@
         ctx.fill();
     }
 
+    function drawFox() {
+        // Draw fox body
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(fox.x + fox.size / 2, fox.y + fox.size / 2, fox.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw fox eyes
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(fox.x + fox.size * 0.3, fox.y + fox.size * 0.4, fox.size * 0.1, 0, Math.PI * 2);
+        ctx.arc(fox.x + fox.size * 0.7, fox.y + fox.size * 0.4, fox.size * 0.1, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw fox pupils
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(fox.x + fox.size * 0.3, fox.y + fox.size * 0.4, fox.size * 0.05, 0, Math.PI * 2);
+        ctx.arc(fox.x + fox.size * 0.7, fox.y + fox.size * 0.4, fox.size * 0.05, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
     function drawEggs() {
         ctx.fillStyle = 'brown';
         eggs.forEach(egg => {
@@ -123,6 +151,18 @@
             chicken.y += chicken.speed;
         }
 
+        // Fox movement
+        if (player.x < fox.x) {
+        fox.x -= fox.speed;
+    } else {
+        fox.x += fox.speed;
+    }
+    if (player.y < fox.y) {
+        fox.y -= fox.speed;
+    } else {
+        fox.y += fox.speed;
+    }
+
         // Egg laying
         if (Math.random() < 0.01) { // Chance to lay egg
             eggs.push({
@@ -157,6 +197,17 @@
             resetGame();
         }
 
+        eggs.forEach((egg, index) => {
+        if (
+            fox.x < egg.x + egg.width &&
+            fox.x + fox.size > egg.x &&
+            fox.y < egg.y + egg.height &&
+            fox.y + fox.size > egg.y
+        ) {
+            eggs.splice(index, 1); // Remove the eaten egg
+        }
+    });
+
         // Update score (elapsed time)
         score++;
     }
@@ -166,6 +217,8 @@
         player.y = 50;
         chicken.x = canvas.width - 50;
         chicken.y = canvas.height - 50;
+        fox.x = canvas.width - 50;
+        fox.y = 50;
         eggs = [];
         score = 0;
         keys = {}; // Reset keys
@@ -176,6 +229,7 @@
         update();
         drawPlayer();
         drawChicken();
+        drawFox();
         drawEggs();
         drawScore();
         requestAnimationFrame(gameLoop);
