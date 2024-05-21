@@ -24,22 +24,23 @@
     };
 
     let chicken = {
-    x: canvas.width - 50,
-    y: canvas.height - 50,
-    size: 30,
-    speed: 2
-};
+        x: canvas.width - 50,
+        y: canvas.height - 50,
+        size: 30,
+        speed: 2
+    };
 
-let fox = {
-    x: canvas.width - 50,
-    y: 50,
-    size: 25,
-    speed: chicken.speed / 2 // Set fox speed to half of chicken speed
-};
-
+    let fox = {
+        x: canvas.width - 50,
+        y: 50,
+        size: 25,
+        speed: chicken.speed / 2 // Set fox speed to half of chicken speed
+    };
 
     let eggs = [];
     let score = 0;
+    let touchX = null;
+    let touchY = null;
 
     function drawPlayer() {
         // Draw frog body
@@ -153,15 +154,16 @@ let fox = {
 
         // Fox movement
         if (player.x < fox.x) {
-        fox.x -= fox.speed;
-    } else {
-        fox.x += fox.speed;
-    }
-    if (player.y < fox.y) {
-        fox.y -= fox.speed;
-    } else {
-        fox.y += fox.speed;
-    }
+            fox.x -= fox.speed;
+        } else
+        {
+            fox.x += fox.speed;
+        }
+        if (player.y < fox.y) {
+            fox.y -= fox.speed;
+        } else {
+            fox.y += fox.speed;
+        }
 
         // Egg laying
         if (Math.random() < 0.01) { // Chance to lay egg
@@ -198,15 +200,15 @@ let fox = {
         }
 
         eggs.forEach((egg, index) => {
-        if (
-            fox.x < egg.x + egg.width &&
-            fox.x + fox.size > egg.x &&
-            fox.y < egg.y + egg.height &&
-            fox.y + fox.size > egg.y
-        ) {
-            eggs.splice(index, 1); // Remove the eaten egg
-        }
-    });
+            if (
+                fox.x < egg.x + egg.width &&
+                fox.x + fox.size > egg.x &&
+                fox.y < egg.y + egg.height &&
+                fox.y + fox.size > egg.y
+            ) {
+                eggs.splice(index, 1); // Remove the eaten egg
+            }
+        });
 
         // Update score (elapsed time)
         score++;
@@ -243,6 +245,38 @@ let fox = {
 
     document.addEventListener('keyup', function(e) {
         delete keys[e.keyCode];
+    });
+
+    canvas.addEventListener('touchstart', function(e) {
+        touchX = e.touches[0].clientX;
+        touchY = e.touches[0].clientY;
+    });
+
+    canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        if (touchX !== null && touchY !== null) {
+            let deltaX = e.touches[0].clientX - touchX;
+            let deltaY = e.touches[0].clientY - touchY;
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    keys[39] = true; // Right arrow
+                } else {
+                    keys[37] = true; // Left arrow
+                }
+            } else {
+                if (deltaY > 0) {
+                    keys[40] = true; // Down arrow
+                } else {
+                    keys[38] = true; // Up arrow
+                }
+            }
+        }
+    });
+
+    canvas.addEventListener('touchend', function(e) {
+        touchX = null;
+        touchY = null;
+        keys = {}; // Reset keys
     });
 
     gameLoop();
