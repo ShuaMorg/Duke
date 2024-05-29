@@ -5,16 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chicken and Fox Game</title>
 <style>
+    body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
     canvas {
         border: 1px solid black;
     }
 </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="800" height="600"></canvas>
+<canvas id="gameCanvas"></canvas>
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.8;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     let player = {
         x: 50,
@@ -43,24 +59,23 @@
     let touchY = null;
 
     function drawPlayer() {
-        // Draw frog body
         ctx.fillStyle = 'green';
         ctx.beginPath();
         ctx.arc(player.x + player.size / 2, player.y + player.size / 2, player.size / 2, 0, Math.PI * 2);
         ctx.fill();
-        // Draw frog eyes
+
         ctx.fillStyle = 'white';
         ctx.beginPath();
         ctx.arc(player.x + player.size * 0.3, player.y + player.size * 0.4, player.size * 0.1, 0, Math.PI * 2);
         ctx.arc(player.x + player.size * 0.7, player.y + player.size * 0.4, player.size * 0.1, 0, Math.PI * 2);
         ctx.fill();
-        // Draw frog pupils
+
         ctx.fillStyle = 'black';
         ctx.beginPath();
         ctx.arc(player.x + player.size * 0.3, player.y + player.size * 0.4, player.size * 0.05, 0, Math.PI * 2);
         ctx.arc(player.x + player.size * 0.7, player.y + player.size * 0.4, player.size * 0.05, 0, Math.PI * 2);
         ctx.fill();
-        // Draw frog mouth
+
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -69,19 +84,18 @@
     }
 
     function drawChicken() {
-        // Draw chicken body
         ctx.fillStyle = 'orange';
         ctx.beginPath();
         ctx.arc(chicken.x + chicken.size / 2, chicken.y + chicken.size / 2, chicken.size / 2, 0, Math.PI * 2);
         ctx.fill();
-        // Draw chicken beak
+
         ctx.fillStyle = 'yellow';
         ctx.beginPath();
         ctx.moveTo(chicken.x + chicken.size / 2, chicken.y + chicken.size / 2);
         ctx.lineTo(chicken.x + chicken.size * 0.6, chicken.y + chicken.size * 0.4);
         ctx.lineTo(chicken.x + chicken.size * 0.7, chicken.y + chicken.size / 2);
         ctx.fill();
-        // Draw chicken eyes
+
         ctx.fillStyle = 'black';
         ctx.beginPath();
         ctx.arc(chicken.x + chicken.size * 0.4, chicken.y + chicken.size * 0.3, chicken.size * 0.1, 0, Math.PI * 2);
@@ -90,18 +104,17 @@
     }
 
     function drawFox() {
-        // Draw fox body
         ctx.fillStyle = 'red';
         ctx.beginPath();
         ctx.arc(fox.x + fox.size / 2, fox.y + fox.size / 2, fox.size / 2, 0, Math.PI * 2);
         ctx.fill();
-        // Draw fox eyes
+
         ctx.fillStyle = 'white';
         ctx.beginPath();
         ctx.arc(fox.x + fox.size * 0.3, fox.y + fox.size * 0.4, fox.size * 0.1, 0, Math.PI * 2);
         ctx.arc(fox.x + fox.size * 0.7, fox.y + fox.size * 0.4, fox.size * 0.1, 0, Math.PI * 2);
         ctx.fill();
-        // Draw fox pupils
+
         ctx.fillStyle = 'black';
         ctx.beginPath();
         ctx.arc(fox.x + fox.size * 0.3, fox.y + fox.size * 0.4, fox.size * 0.05, 0, Math.PI * 2);
@@ -155,8 +168,7 @@
         // Fox movement
         if (player.x < fox.x) {
             fox.x -= fox.speed;
-        } else
-        {
+        } else {
             fox.x += fox.speed;
         }
         if (player.y < fox.y) {
@@ -283,3 +295,4 @@
 </script>
 </body>
 </html>
+
