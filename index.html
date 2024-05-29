@@ -142,93 +142,94 @@ function drawEggs() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function update() {
-        if (keys[37]) { // left arrow
-            player.x -= player.speed;
-        }
-        if (keys[39]) { // right arrow
-            player.x += player.speed;
-        }
-        if (keys[38]) { // up arrow
-            player.y -= player.speed;
-        }
-        if (keys[40]) { // down arrow
-            player.y += player.speed;
-        }
+ function update() {
+    if (keys[37] && player.x > 0) { // left arrow
+        player.x -= player.speed;
+    }
+    if (keys[39] && player.x < canvas.width - player.size) { // right arrow
+        player.x += player.speed;
+    }
+    if (keys[38] && player.y > 0) { // up arrow
+        player.y -= player.speed;
+    }
+    if (keys[40] && player.y < canvas.height - player.size) { // down arrow
+        player.y += player.speed;
+    }
 
-        // Chicken movement
-        if (player.x < chicken.x) {
-            chicken.x -= chicken.speed;
-        } else {
-            chicken.x += chicken.speed;
-        }
-        if (player.y < chicken.y) {
-            chicken.y -= chicken.speed;
-        } else {
-            chicken.y += chicken.speed;
-        }
+    // Chicken movement
+    if (player.x < chicken.x) {
+        chicken.x -= chicken.speed;
+    } else {
+        chicken.x += chicken.speed;
+    }
+    if (player.y < chicken.y) {
+        chicken.y -= chicken.speed;
+    } else {
+        chicken.y += chicken.speed;
+    }
 
-        // Fox movement
-        if (player.x < fox.x) {
-            fox.x -= fox.speed;
-        } else {
-            fox.x += fox.speed;
-        }
-        if (player.y < fox.y) {
-            fox.y -= fox.speed;
-        } else {
-            fox.y += fox.speed;
-        }
+    // Fox movement
+    if (player.x < fox.x) {
+        fox.x -= fox.speed;
+    } else {
+        fox.x += fox.speed;
+    }
+    if (player.y < fox.y) {
+        fox.y -= fox.speed;
+    } else {
+        fox.y += fox.speed;
+    }
 
-// Egg laying
-if (Math.random() < 0.01) { // Chance to lay egg
-    eggs.push({
-        x: chicken.x + chicken.size / 2,
-        y: chicken.y + chicken.size,
-        width: 10,
-        height: 12 // Adjust height to make it less elongated
+    // Egg laying
+    if (Math.random() < 0.01) { // Chance to lay egg
+        eggs.push({
+            x: chicken.x + chicken.size / 2,
+            y: chicken.y + chicken.size,
+            width: 10,
+            height: 12 // Adjust height to make it less elongated
+        });
+    }
+
+    // Egg collision with player
+    eggs.forEach(egg => {
+        if (
+            player.x < egg.x + egg.width &&
+            player.x + player.size > egg.x &&
+            player.y < egg.y + egg.height &&
+            player.y + player.size > egg.y
+        ) {
+            alert('You touched an egg! Your score was: ' + score);
+            resetGame();
+        }
     });
+
+    // Chicken collision with player
+    if (
+        player.x < chicken.x + chicken.size &&
+        player.x + player.size > chicken.x &&
+        player.y < chicken.y + chicken.size &&
+        player.y + player.size > chicken.y
+    ) {
+        alert('You got hit by the chicken! Your score was: ' + score);
+        resetGame();
+    }
+
+    eggs.forEach((egg, index) => {
+        if (
+            fox.x < egg.x + egg.width &&
+            fox.x + fox.size > egg.x &&
+            fox.y < egg.y + egg.height &&
+            fox.y + fox.size > egg.y
+        ) {
+            eggs.splice(index, 1); // Remove the eaten egg
+        }
+    });
+
+    // Update score (elapsed time)
+    score++;
 }
 
 
-        // Egg collision with player
-        eggs.forEach(egg => {
-            if (
-                player.x < egg.x + egg.width &&
-                player.x + player.size > egg.x &&
-                player.y < egg.y + egg.height &&
-                player.y + player.size > egg.y
-            ) {
-                alert('You touched an egg! Your score was: ' + score);
-                resetGame();
-            }
-        });
-
-        // Chicken collision with player
-        if (
-            player.x < chicken.x + chicken.size &&
-            player.x + player.size > chicken.x &&
-            player.y < chicken.y + chicken.size &&
-            player.y + player.size > chicken.y
-        ) {
-            alert('You got hit by the chicken! Your score was: ' + score);
-            resetGame();
-        }
-
-        eggs.forEach((egg, index) => {
-            if (
-                fox.x < egg.x + egg.width &&
-                fox.x + fox.size > egg.x &&
-                fox.y < egg.y + egg.height &&
-                fox.y + fox.size > egg.y
-            ) {
-                eggs.splice(index, 1); // Remove the eaten egg
-            }
-        });
-
-        // Update score (elapsed time)
-        score++;
-    }
 
     function resetGame() {
         player.x = 50;
