@@ -123,11 +123,14 @@
     }
 
     function drawEggs() {
-        ctx.fillStyle = 'brown';
-        eggs.forEach(egg => {
-            ctx.fillRect(egg.x, egg.y, egg.width, egg.height);
-        });
-    }
+    ctx.fillStyle = 'brown';
+    eggs.forEach(egg => {
+        ctx.beginPath();
+        ctx.ellipse(egg.x, egg.y, egg.width / 2, egg.height, 0, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
 
     function drawScore() {
         ctx.fillStyle = 'black';
@@ -177,15 +180,16 @@
             fox.y += fox.speed;
         }
 
-        // Egg laying
-        if (Math.random() < 0.01) { // Chance to lay egg
-            eggs.push({
-                x: chicken.x + chicken.size / 2,
-                y: chicken.y + chicken.size,
-                width: 10,
-                height: 10
-            });
-        }
+// Egg laying
+if (Math.random() < 0.01) { // Chance to lay egg
+    eggs.push({
+        x: chicken.x + chicken.size / 2,
+        y: chicken.y + chicken.size,
+        width: 10,
+        height: 15 // Adjust height to make it egg-shaped
+    });
+}
+
 
         // Egg collision with player
         eggs.forEach(egg => {
