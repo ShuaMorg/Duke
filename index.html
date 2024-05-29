@@ -122,11 +122,11 @@
         ctx.fill();
     }
 
-    function drawEggs() {
+function drawEggs() {
     ctx.fillStyle = 'brown';
     eggs.forEach(egg => {
         ctx.beginPath();
-        ctx.ellipse(egg.x, egg.y, egg.width / 2, egg.height, 0, 0, Math.PI * 2);
+        ctx.ellipse(egg.x, egg.y, egg.width / 2, egg.height / 1.5, 0, 0, Math.PI * 2); // Adjust height ratio to make eggs less elongated
         ctx.fill();
     });
 }
@@ -186,7 +186,7 @@ if (Math.random() < 0.01) { // Chance to lay egg
         x: chicken.x + chicken.size / 2,
         y: chicken.y + chicken.size,
         width: 10,
-        height: 15 // Adjust height to make it egg-shaped
+        height: 12 // Adjust height to make it less elongated
     });
 }
 
